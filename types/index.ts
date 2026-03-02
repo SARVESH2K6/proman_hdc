@@ -19,6 +19,7 @@ export interface Project {
     status: Status;
     priority: Priority;
     owner_id: string;
+    owner_name: string;
     original_start_date: string | null;
     original_end_date: string | null;
     revised_start_date: string | null;
@@ -37,6 +38,7 @@ export interface Task {
     priority: Priority;
     duration: number; // in days
     assignee_id: string | null;
+    assignee_name: string | null;
     original_start_date: string | null;
     original_end_date: string | null;
     revised_start_date: string | null;

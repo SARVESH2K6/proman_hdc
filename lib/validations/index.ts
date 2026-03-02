@@ -10,6 +10,7 @@ export const prioritySchema = z.enum(["low", "medium", "high", "urgent"]);
 export const createProjectSchema = z.object({
     name: z.string().min(1, "Project name is required").max(100),
     description: z.string().max(500).optional(),
+    owner_name: z.string().min(1, "Owner name is required").max(100),
     status: statusSchema.default("not_started"),
     priority: prioritySchema.default("medium"),
 });
@@ -28,6 +29,7 @@ export const createTaskSchema = z.object({
     duration: z.coerce.number().min(1, "Duration must be at least 1 day").default(1),
     original_start_date: z.string().optional(),
     assignee_id: z.string().optional(),
+    assignee_name: z.string().optional(),
 });
 
 // Since Original Dates are fixed, updating only applies to revised dates and duration

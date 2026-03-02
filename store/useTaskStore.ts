@@ -22,6 +22,7 @@ const MOCK_TASKS: Task[] = [
         priority: "high",
         duration: 5,
         assignee_id: "user-1",
+        assignee_name: "Sarah Jenkins",
         original_start_date: "2026-01-15T00:00:00.000Z",
         original_end_date: computeEndDate("2026-01-15T00:00:00.000Z", 5) || "",
         revised_start_date: null,
@@ -39,6 +40,7 @@ const MOCK_TASKS: Task[] = [
         priority: "high",
         duration: 14,
         assignee_id: "user-2",
+        assignee_name: "Mike Chen",
         original_start_date: computeEndDate("2026-01-15T00:00:00.000Z", 5 + 1) || "", // Parent end + 1
         original_end_date: computeEndDate(computeEndDate("2026-01-15T00:00:00.000Z", 5 + 1) || "", 14) || "",
         revised_start_date: null,
@@ -51,7 +53,7 @@ const MOCK_TASKS: Task[] = [
 // ── Store interface ───────────────────────────────────────────────────────────
 interface TaskStore {
     tasks: Task[];
-    addTask: (data: Omit<Task, "id" | "created_at" | "updated_at" | "original_end_date" | "revised_start_date" | "revised_end_date">) => void;
+    addTask: (data: Omit<Task, "id" | "created_at" | "updated_at" | "original_end_date" | "revised_start_date" | "revised_end_date" | "assignee_id">) => void;
     updateTask: (id: string, data: Partial<Task>) => void;
     deleteTask: (id: string) => void;
     moveTask: (id: string, newStatus: Status) => void;
@@ -88,6 +90,8 @@ export const useTaskStore = create<TaskStore>()(
                     revised_start_date: null, // Remains null until deviation
                     revised_end_date: null,
                     id: `task-${Date.now()}`,
+                    assignee_id: "user-1",
+                    assignee_name: data.assignee_name || "Unknown Assignee",
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString(),
                 };
@@ -145,7 +149,6 @@ export const useTaskStore = create<TaskStore>()(
             },
 
             moveTask: (id, newStatus) => {
-                const existingTask = get().tasks.find(t => t.id === id);
                 set((state) => ({
                     tasks: state.tasks.map((t) =>
                         t.id === id ? { ...t, status: newStatus, updated_at: new Date().toISOString() } : t,

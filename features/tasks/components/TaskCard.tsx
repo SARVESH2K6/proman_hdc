@@ -5,12 +5,6 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import type { Task } from "@/types";
 
-// Mock assignee map (replace with real users later)
-const ASSIGNEES: Record<string, string> = {
-    "user-1": "JD",
-    "user-2": "SA",
-};
-
 interface TaskCardProps {
     task: Task;
     onClick?: (task: Task) => void;
@@ -58,10 +52,10 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
                 </div>
 
                 {/* Assignee avatar */}
-                {task.assignee_id && (
-                    <Avatar className="h-5 w-5">
+                {task.assignee_name && (
+                    <Avatar className="h-5 w-5" title={task.assignee_name}>
                         <AvatarFallback className="text-[9px] font-semibold bg-indigo-100 text-indigo-700">
-                            {ASSIGNEES[task.assignee_id] ?? "?"}
+                            {task.assignee_name.substring(0, 2).toUpperCase()}
                         </AvatarFallback>
                     </Avatar>
                 )}

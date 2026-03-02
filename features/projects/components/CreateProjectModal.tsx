@@ -40,6 +40,7 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
         addProject({
             name: payload.name,
             description: payload.description ?? null,
+            owner_name: payload.owner_name,
             status: payload.status || "not_started",
             priority: payload.priority || "medium",
         });
@@ -92,6 +93,21 @@ export function CreateProjectModal({ open, onOpenChange }: CreateProjectModalPro
                     />
                     {errors.name && (
                         <p className="text-[12px] text-red-500">{errors.name.message}</p>
+                    )}
+                </div>
+
+                {/* Owner Name */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-[13px] font-medium text-zinc-700">
+                        Owner Name <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                        {...register("owner_name")}
+                        placeholder="e.g. Alex Johnson"
+                        className="h-9 rounded-lg text-sm border-zinc-200 bg-zinc-50 focus-visible:ring-indigo-400"
+                    />
+                    {errors.owner_name && (
+                        <p className="text-[12px] text-red-500">{errors.owner_name.message}</p>
                     )}
                 </div>
 

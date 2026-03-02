@@ -37,6 +37,7 @@ export function EditProjectModal({ open, onOpenChange, project }: EditProjectMod
         defaultValues: {
             name: project.name,
             description: project.description || "",
+            owner_name: project.owner_name,
             status: project.status,
             priority: project.priority,
         },
@@ -47,6 +48,7 @@ export function EditProjectModal({ open, onOpenChange, project }: EditProjectMod
             reset({
                 name: project.name,
                 description: project.description || "",
+                owner_name: project.owner_name,
                 status: project.status,
                 priority: project.priority,
             });
@@ -58,6 +60,7 @@ export function EditProjectModal({ open, onOpenChange, project }: EditProjectMod
         updateProject(project.id, {
             name: payload.name,
             description: payload.description || null,
+            owner_name: payload.owner_name,
             status: payload.status,
             priority: payload.priority,
         });
@@ -106,6 +109,21 @@ export function EditProjectModal({ open, onOpenChange, project }: EditProjectMod
                     />
                     {errors.name && (
                         <p className="text-[12px] text-red-500">{errors.name.message}</p>
+                    )}
+                </div>
+
+                {/* Owner Name */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-[13px] font-medium text-zinc-700">
+                        Owner Name <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                        {...register("owner_name")}
+                        placeholder="e.g. Alex Johnson"
+                        className="h-9 rounded-lg text-sm border-zinc-200 bg-zinc-50 focus-visible:ring-indigo-400"
+                    />
+                    {errors.owner_name && (
+                        <p className="text-[12px] text-red-500">{errors.owner_name.message}</p>
                     )}
                 </div>
 

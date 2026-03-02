@@ -33,7 +33,10 @@ interface StatusBadgeProps {
 }
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
-    const config = statusConfig[status];
+    const config = statusConfig[status] || {
+        label: typeof status === 'string' ? status.replace('_', ' ') : "Unknown",
+        className: "bg-zinc-100 text-zinc-600 ring-zinc-200"
+    };
     return (
         <span
             className={cn(
@@ -43,7 +46,7 @@ export function StatusBadge({ status, className }: StatusBadgeProps) {
             )}
         >
             <span className="h-1.5 w-1.5 rounded-full bg-current opacity-80" />
-            {config.label}
+            <span className="capitalize">{config.label}</span>
         </span>
     );
 }

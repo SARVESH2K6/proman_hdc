@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { addDays, parseISO, formatISO } from "date-fns";
 import { Modal } from "@/components/shared/Modal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +60,7 @@ export function CreateTaskModal({
             priority: taskToEdit?.priority || "medium",
             duration: taskToEdit?.duration || 1,
             dependency_id: taskToEdit?.dependency_id || "none",
+            assignee_name: taskToEdit?.assignee_name || "",
             original_start_date: taskToEdit?.original_start_date || "",
             revised_start_date: taskToEdit?.revised_start_date || "",
         },
@@ -77,11 +79,25 @@ export function CreateTaskModal({
                 priority: taskToEdit?.priority || "medium",
                 duration: taskToEdit?.duration || 1,
                 dependency_id: taskToEdit?.dependency_id || "none",
+                assignee_name: taskToEdit?.assignee_name || "",
                 original_start_date: taskToEdit?.original_start_date || "",
                 revised_start_date: taskToEdit?.revised_start_date || "",
             });
         }
     }, [open, taskToEdit, defaultStatus, projectId, reset]);
+
+    useEffect(() => {
+        if (hasDependency) {
+            const parent = projectTasks.find(t => t.id === dependencyId);
+            if (parent) {
+                const parentEnd = parent.revised_end_date || parent.original_end_date;
+                if (parentEnd) {
+                    const nextDay = formatISO(addDays(parseISO(parentEnd), 1)).split("T")[0];
+                    setValue(isEditing ? "revised_start_date" : "original_start_date", nextDay, { shouldValidate: true });
+                }
+            }
+        }
+    }, [dependencyId, hasDependency, projectTasks, isEditing, setValue]);
 
     function onSubmit(data: any) {
         const payload = data;
@@ -95,6 +111,7 @@ export function CreateTaskModal({
                 priority: payload.priority,
                 duration: Number(payload.duration),
                 dependency_id: finalDependencyId,
+                assignee_name: payload.assignee_name,
                 revised_start_date: hasDependency ? null : (payload.revised_start_date || null),
             });
         } else {
@@ -106,8 +123,8 @@ export function CreateTaskModal({
                 priority: payload.priority || "medium",
                 duration: Number(payload.duration) || 1,
                 dependency_id: finalDependencyId,
+                assignee_name: payload.assignee_name || "Unknown Assignee",
                 original_start_date: hasDependency ? null : (payload.original_start_date || null),
-                assignee_id: "user-1",
             });
         }
 
@@ -186,6 +203,18 @@ export function CreateTaskModal({
                     )}
                 </div>
 
+                {/* Assignee Name */}
+                <div className="flex flex-col gap-1.5">
+                    <label className="text-[13px] font-medium text-zinc-700">
+                        Assignee Name
+                    </label>
+                    <Input
+                        {...register("assignee_name")}
+                        placeholder="e.g. Sarah Jenkins"
+                        className="h-9 rounded-lg text-sm border-zinc-200 bg-zinc-50 focus-visible:ring-indigo-400"
+                    />
+                </div>
+
                 {/* Description */}
                 <div className="flex flex-col gap-1.5">
                     <label className="text-[13px] font-medium text-zinc-700">Description</label>
@@ -262,9 +291,9 @@ export function CreateTaskModal({
                                 <SelectValue placeholder="No Dependency" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="none">None</SelectItem>
+                                <SelectItem value="none">Independent Task</SelectItem>
                                 {projectTasks.map((t) => (
-                                    <SelectItem key={t.id} value={t.id}>{t.title}</SelectItem>
+                                    <SelectItem key={t.id} value={t.id}>Dependent on: {t.title}</SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>

@@ -71,8 +71,11 @@ function ProjectDetailClient({ id }: { id: string }) {
                             </h1>
                             <StatusBadge status={project.status} />
                         </div>
+                        <div className="flex items-center gap-1.5 text-sm text-zinc-500">
+                            <span className="font-medium text-zinc-700">Owner:</span> {project.owner_name}
+                        </div>
                         {project.description && (
-                            <p className="text-sm text-zinc-500 max-w-2xl">{project.description}</p>
+                            <p className="text-sm text-zinc-500 max-w-2xl mt-1">{project.description}</p>
                         )}
                         <div className="flex items-center gap-4 text-[13px] text-zinc-400">
                             <span>
